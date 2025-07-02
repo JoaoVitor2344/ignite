@@ -143,3 +143,4 @@ D:\Projetos\ignite\obj\Debug\net9.0\refint\ignite.dll
 D:\Projetos\ignite\obj\Debug\net9.0\ignite.pdb
 D:\Projetos\ignite\obj\Debug\net9.0\ignite.genruntimeconfig.cache
 D:\Projetos\ignite\obj\Debug\net9.0\ref\ignite.dll
+D:\Projetos\ignite\obj\Debug\net9.0\ignite.sourcelink.json
