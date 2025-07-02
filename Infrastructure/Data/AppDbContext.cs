@@ -9,5 +9,6 @@ namespace ignite.Infrastructure.Data
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Level> Levels { get; set; }
     }
 }

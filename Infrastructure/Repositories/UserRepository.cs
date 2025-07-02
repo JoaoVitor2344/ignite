@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ignite.Domain.Entities;
 using ignite.Infrastructure.Data;
+using ignite.Domain.Entities;
 
 namespace ignite.Infrastructure.Repositories
 {
@@ -13,16 +13,15 @@ namespace ignite.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
         public async Task AddAsync(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

@@ -14,11 +14,13 @@ namespace ignite.Services.Implementations
             _repository = repository;
         }
 
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
         public async Task<User> CreateUserAsync(CreateUserDto dto)
         {
-            var existing = await _repository.GetByEmailAsync(dto.Email);
-            if (existing != null) throw new Exception("Email already registered.");
-
             var user = new User
             {
                 Name = dto.Name,

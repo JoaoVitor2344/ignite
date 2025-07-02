@@ -13,7 +13,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILevelRepository, LevelRepository>();
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILevelService, LevelService>();
 
 var app = builder.Build();
 
@@ -21,9 +24,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwaggerUi(options =>
-    {
-        options.DocumentPath = "/swagger";
-    });
+        {
+            options.DocumentPath = "/openapi/v1.json";
+        });
 }
 
 app.UseHttpsRedirection();

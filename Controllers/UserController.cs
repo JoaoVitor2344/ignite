@@ -16,6 +16,20 @@ namespace ignite.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            try
+            {
+                var users = await _userService.GetUsersAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDto dto)
         {
