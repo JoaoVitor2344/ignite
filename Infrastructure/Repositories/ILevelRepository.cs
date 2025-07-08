@@ -1,8 +1,13 @@
+using ignite.Domain.Entities;
+
 namespace ignite.Infrastructure.Repositories
 {
     public interface ILevelRepository
     {
-        Task<IEnumerable<Domain.Entities.Level>> GetAllAsync();
-        Task AddAsync(Domain.Entities.Level level);
+        Task<IEnumerable<Level>> GetAllAsync();
+        Task<Level?> GetByIdAsync(Guid id);
+        Task AddAsync(Level level);
+        Task UpdateAsync(Level level);
+        Task DeleteAsync(Guid id);
     }
 }

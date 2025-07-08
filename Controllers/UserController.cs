@@ -49,7 +49,7 @@ namespace ignite.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDto dto)
+        public async Task<ActionResult<User>> CreateUser([FromBody] UserDto dto)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace ignite.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserDto dto)
         {
             try
             {

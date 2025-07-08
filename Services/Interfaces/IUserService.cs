@@ -7,8 +7,8 @@ namespace ignite.Services.Interfaces
     {
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User?> GetUserByIdAsync(Guid id);
-        Task<User> CreateUserAsync(CreateUserDto dto);
-        Task UpdateUserAsync(Guid id, UpdateUserDto user);
+        Task<User> CreateUserAsync(UserDto dto);
+        Task UpdateUserAsync(Guid id, UserDto user);
         Task DeleteUserAsync(Guid id);
     }
 }

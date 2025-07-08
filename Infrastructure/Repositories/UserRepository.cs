@@ -42,12 +42,19 @@ namespace ignite.Infrastructure.Repositories
 
         public async Task UpdateAsync(User user)
         {
+            user.UpdatedAt = DateTime.UtcNow;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(User user)
+        public async Task DeleteAsync(Guid id)
         {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+            user.DeletedAt = DateTime.UtcNow;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }

@@ -1,3 +1,4 @@
+using ignite.Domain.Entities;
 using ignite.DTOs;
 using ignite.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +17,80 @@ namespace ignite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLevels()
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Level>>> GetLevels()
         {
-            var levels = await _levelService.GetLevelsAsync();
-            return Ok(levels);
+            try
+            {
+                var levels = await _levelService.GetLevelsAsync();
+                return Ok(levels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateLevel([FromBody] CreateLevelDto dto)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Level?>> GetLevelById(Guid id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var level = await _levelService.GetLevelByIdAsync(id);
+                if (level == null)
+                {
+                    return NotFound();
+                }
+                return Ok(level);
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-            var level = await _levelService.CreateLevelAsync(dto);
-            return CreatedAtAction(nameof(GetLevels), new { id = level.Id }, level);
+        [HttpPost]
+        public async Task<ActionResult<Level>> CreateLevel([FromBody] LevelDto dto)
+        {
+            try
+            {
+                var level = await _levelService.CreateLevelAsync(dto);
+                return Ok(level);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLevel(Guid id, [FromBody] LevelDto dto)
+        {
+            try
+            {
+                await _levelService.UpdateLevelAsync(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLevel(Guid id)
+        {
+            try
+            {
+                await _levelService.DeleteLevelAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
