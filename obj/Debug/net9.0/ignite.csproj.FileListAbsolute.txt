@@ -144,3 +144,9 @@ D:\Projetos\ignite\obj\Debug\net9.0\ignite.pdb
 D:\Projetos\ignite\obj\Debug\net9.0\ignite.genruntimeconfig.cache
 D:\Projetos\ignite\obj\Debug\net9.0\ref\ignite.dll
 D:\Projetos\ignite\obj\Debug\net9.0\ignite.sourcelink.json
+D:\Projetos\ignite\bin\Debug\net9.0\published\web.config
+D:\Projetos\ignite\bin\Debug\net9.0\published\appsettings.Development.json
+D:\Projetos\ignite\bin\Debug\net9.0\published\appsettings.json
+D:\Projetos\ignite\bin\Debug\net9.0\published\ignite.deps.json
+D:\Projetos\ignite\bin\Debug\net9.0\published\ignite.runtimeconfig.json
+D:\Projetos\ignite\bin\Debug\net9.0\published\ignite.staticwebassets.endpoints.json
