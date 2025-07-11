@@ -1,13 +1,13 @@
-using ignite.Domain.Entities;
+using ignite.Application.Commands.UserCommands;
 using ignite.DTOs;
 
 namespace ignite.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<IEnumerable<User>> GetUsersAsync();
-    Task<User?> GetUserByIdAsync(Guid id);
-    Task<User> CreateUserAsync(UserDto dto);
-    Task UpdateUserAsync(Guid id, UserDto user);
+    Task<IEnumerable<UserResponseDto>> GetUsersAsync();
+    Task<UserResponseDto?> GetUserByIdAsync(Guid id);
+    Task<Guid> CreateUserAsync(CreateUserCommand command);
+    Task UpdateUserAsync(UpdateUserCommand command);
     Task DeleteUserAsync(Guid id);
 }

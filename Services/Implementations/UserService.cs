@@ -1,84 +1,45 @@
+using MediatR;
+using ignite.Application.Commands.UserCommands;
+using ignite.Application.Queries.UserQueries;
 using ignite.DTOs;
-using ignite.Domain.Entities;
-using ignite.Infrastructure.Repositories;
 using ignite.Services.Interfaces;
 
 namespace ignite.Services.Implementations;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _repository;
+    private readonly IMediator _mediator;
 
-    public UserService(IUserRepository repository)
+    public UserService(IMediator mediator)
     {
-        _repository = repository;
+        _mediator = mediator;
     }
 
-    public async Task<IEnumerable<User>> GetUsersAsync()
+    public async Task<IEnumerable<UserResponseDto>> GetUsersAsync()
     {
-        return await _repository.GetAllAsync();
+        var query = new GetAllUsersQuery();
+        return await _mediator.Send(query);
     }
 
-    public async Task<User?> GetUserByIdAsync(Guid id)
+    public async Task<UserResponseDto?> GetUserByIdAsync(Guid id)
     {
-        return await _repository.GetByIdAsync(id);
+        var query = new GetUserByIdQuery { Id = id };
+        return await _mediator.Send(query);
     }
 
-    public async Task<User> CreateUserAsync(UserDto dto)
+    public async Task<Guid> CreateUserAsync(CreateUserCommand command)
     {
-        if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
-        {
-            throw new ArgumentException("Name, Email, and Password are required fields.");
-        }
-
-        var existingUser = await _repository.GetByEmailAsync(dto.Email);
-        if (existingUser != null)
-        {
-            throw new InvalidOperationException("A user with this email already exists.");
-        }
-
-        var user = new User
-        {
-            Name = dto.Name,
-            Email = dto.Email,
-            Password = dto.Password,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        await _repository.AddAsync(user);
-        return user;
+        return await _mediator.Send(command);
     }
 
-    public async Task UpdateUserAsync(Guid id, UserDto user)
+    public async Task UpdateUserAsync(UpdateUserCommand command)
     {
-        if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
-        {
-            throw new ArgumentException("Name, Email, and Password are required fields.");
-        }
-
-        var existingUser = await _repository.GetByIdAsync(id);
-        if (existingUser == null)
-        {
-            throw new KeyNotFoundException("User not found");
-        }
-
-        existingUser.Name = user.Name;
-        existingUser.Email = user.Email;
-        existingUser.Password = user.Password;
-        existingUser.UpdatedAt = DateTime.UtcNow;
-
-        await _repository.UpdateAsync(existingUser);
+        await _mediator.Send(command);
     }
 
     public async Task DeleteUserAsync(Guid id)
     {
-        var user = await _repository.GetByIdAsync(id);
-        if (user == null)
-        {
-            throw new KeyNotFoundException("User not found");
-        }
-
-        user.DeletedAt = DateTime.UtcNow;
-        await _repository.DeleteAsync(id);
+        var command = new DeleteUserCommand { Id = id };
+        await _mediator.Send(command);
     }
 }

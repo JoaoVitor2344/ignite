@@ -1,38 +1,75 @@
----
-
-## Estrutura do Projeto e Nomenclatura
-
-A ordem dos arquivos e a lógica de organização que seguimos é a seguinte:
-
-1.  **`Levels.cs`**:
-
-    - **Função:** Representa o modelo de dados (entidade) para o conceito de "Níveis" no aplicativo. Este arquivo define as propriedades de um nível, como ID, nome, pontos de experiência necessários, etc. É a representação do objeto no sistema.
-
-2.  **`CreateLevelDto.cs`**:
-
-    - **Função:** Data Transfer Object (DTO) para a criação de novos níveis. Este DTO define os dados esperados ao criar um novo nível, geralmente contendo apenas as propriedades necessárias para a entrada de dados (e.g., sem o ID, que é gerado pelo sistema). Ajuda a desacoplar a camada de entrada de dados da entidade principal.
-
-3.  **`ILevelRepository.cs`**:
-
-    - **Função:** Interface para o repositório de Níveis. Define o contrato para operações de acesso a dados relacionadas a níveis (CRUD - Create, Read, Update, Delete). Ao usar uma interface, garantimos que qualquer implementação concreta do repositório siga este contrato, promovendo a inversão de dependência e facilitando testes e trocas de tecnologia de banco de dados.
-
-4.  **`LevelRepository.cs`**:
-
-    - **Função:** Implementação concreta do `ILevelRepository`. Este arquivo contém a lógica real de interação com o banco de dados (ou outra fonte de dados) para persistir e recuperar informações sobre os níveis. É onde você encontrará as chamadas para Entity Framework Core, Dapper ou qualquer outra tecnologia ORM/acesso a dados.
-
-5.  **`ILevelService.cs`**:
-
-    - **Função:** Interface para o serviço de Níveis. Define o contrato para as regras de negócio e operações de alto nível relacionadas aos níveis. Geralmente, os serviços orquestram chamadas aos repositórios e implementam a lógica de negócio que não pertence diretamente aos controladores ou aos repositórios.
-
-6.  **`LevelService.cs`**:
-
-    - **Função:** Implementação concreta do `ILevelService`. Aqui é onde as regras de negócio para os níveis são aplicadas. Por exemplo, calcular XP para subir de nível, verificar conquistas de nível, etc. Este serviço depende do `ILevelRepository` para acessar os dados.
-
-7.  **`LevelController.cs`**:
-
-    - **Função:** O controlador da API para a entidade "Nível". Ele lida com as requisições HTTP (GET, POST, PUT, DELETE) relacionadas aos níveis, orquestra as chamadas para o `ILevelService` para executar a lógica de negócio e retorna as respostas HTTP apropriadas para o cliente. É o ponto de entrada para as operações RESTful dos níveis.
-
-8.  **`Program.cs`**:
-    - **Função:** O ponto de entrada principal da aplicação ASP.NET Core. Este arquivo é responsável por configurar o host da aplicação, registrar serviços no contêiner de Injeção de Dependência (DI), configurar o pipeline de middleware (como roteamento, autenticação, autorização, Swagger) e iniciar a aplicação. É onde a "mágica" de inicialização acontece.
+Com certeza! Aqui está um `README.md` conciso e bem formatado, perfeito para o seu Obsidian, explicando a função de cada arquivo na nova arquitetura CQRS.
 
 ---
+
+# Arquitetura da API: CQRS + Mediator
+
+Este projeto utiliza o padrão **CQRS (Command Query Responsibility Segregation)** com o auxílio do **Mediator** para criar uma API limpa, escalável e fácil de manter. A lógica é separada entre operações de escrita (Commands) e leitura (Queries).
+
+---
+
+## 🚀 O Fluxo de uma Requisição
+
+1.  Um **Controller** recebe uma requisição HTTP.
+2.  Ele cria um objeto **Command** (para escrita) ou **Query** (para leitura).
+3.  O objeto é enviado para o **Mediator**.
+4.  O Mediator encontra o **Handler** correto para processar a requisição.
+5.  O Handler executa a lógica de negócio, interagindo diretamente com o **DbContext**.
+
+---
+
+## 🏛️ Domain
+
+A camada mais interna, contendo a lógica de negócio principal.
+
+* `Entities/User.cs`: Representa a entidade `User` e suas regras de negócio. É o molde para a tabela do banco de dados.
+
+---
+
+## ✨ Application (ou Services)
+
+Onde a lógica da aplicação vive. Orquestra o fluxo de dados e substitui os "Services" tradicionais.
+
+* `Commands/`: Representam uma **intenção de alterar dados**.
+    * `CreateUserCommand.cs`: Carrega os dados necessários para criar um usuário. Funciona como um DTO de entrada para escrita.
+    * `UpdateUserCommand.cs`: Carrega os dados para atualizar um usuário.
+    * `DeleteUserCommand.cs`: Carrega o ID do usuário a ser deletado.
+
+* `Queries/`: Representam uma **intenção de ler dados**.
+    * `GetUserByIdQuery.cs`: Define a solicitação para buscar um usuário por ID.
+
+* `Handlers/`: **Contêm a lógica de negócio real**. Cada Handler tem uma única responsabilidade.
+    * `CreateUserCommandHandler.cs`: Recebe o `CreateUserCommand`, valida as informações, faz o hash da senha e salva o novo usuário no banco via `DbContext`.
+    * `GetUserByIdQueryHandler.cs`: Recebe o `GetUserByIdQuery`, consulta o banco via `DbContext` e retorna um `UserResponseDto`.
+
+---
+
+## 📄 DTOs (Data Transfer Objects)
+
+Usados principalmente para **formatar as respostas da API**.
+
+* `UserResponseDto.cs`: Define a estrutura dos dados do usuário que serão enviados para o cliente. Garante que dados sensíveis (como o hash da senha) nunca sejam expostos.
+
+---
+
+## 🎮 Controllers
+
+O ponto de entrada da API. Lida com requisições e respostas HTTP.
+
+* `UserController.cs`: Fica extremamente "magro". Sua única função é receber a requisição, empacotar os dados em um `Command` ou `Query`, enviar para o `Mediator` e retornar a resposta HTTP apropriada (`Ok`, `NotFound`, `Created`). **Não contém nenhuma lógica de negócio**.
+
+---
+
+## 💾 Infrastructure
+
+Contém os detalhes técnicos de implementação.
+
+* `Data/AppDbContext.cs`: A representação da sessão com o banco de dados. É injetado diretamente nos `Handlers` para permitir o acesso aos dados.
+
+---
+
+## ⚙️ Program.cs
+
+O ponto de partida da aplicação.
+
+* **Função:** Configura e conecta todas as peças. Registra os serviços essenciais no contêiner de injeção de dependência, como o `DbContext` e, mais importante, o `MediatR`, que automaticamente descobre todos os Handlers do projeto.

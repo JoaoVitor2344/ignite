@@ -1,82 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
-using ignite.DTOs;
 using ignite.Services.Interfaces;
-using ignite.Domain.Entities;
+using ignite.Application.Commands.UserCommands;
+using ignite.DTOs;
 
 namespace ignite.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly IUserService _userService = userService;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsers()
         {
-            try
-            {
-                var users = await _userService.GetUsersAsync();
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var users = await _userService.GetUsersAsync();
+            return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User?>> GetUserById(Guid id)
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserById(Guid id)
         {
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var user = await _userService.GetUserByIdAsync(id);
+            return user != null ? Ok(user) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser([FromBody] UserDto dto)
+        [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
             try
             {
-                var user = await _userService.CreateUserAsync(dto);
-                return Ok(user);
+                var userId = await _userService.CreateUserAsync(command);
+                return CreatedAtAction(nameof(GetUserById), new { id = userId }, new { id = userId });
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return Conflict(new { message = ex.Message });
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserDto dto)
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
         {
             try
             {
-                await _userService.UpdateUserAsync(id, dto);
+                command.Id = id;
+                await _userService.UpdateUserAsync(command);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException)
             {
-                return BadRequest(ex.Message);
+                return NotFound();
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
@@ -84,9 +71,9 @@ namespace ignite.Controllers
                 await _userService.DeleteUserAsync(id);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException)
             {
-                return BadRequest(ex.Message);
+                return NotFound();
             }
         }
     }
