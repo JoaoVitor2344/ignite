@@ -1,4 +1,4 @@
-namespace ignite.Domain.Entities;
+namespace ignite.Domain.Models;
 
 public class User
 {
