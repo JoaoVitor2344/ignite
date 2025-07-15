@@ -16,7 +16,6 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users.FindAsync(new object[] { request.Id }, cancellationToken) ?? throw new KeyNotFoundException("Usuário não encontrado.");
-        user.SoftDelete();
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

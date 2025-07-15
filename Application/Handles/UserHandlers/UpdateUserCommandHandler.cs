@@ -34,7 +34,6 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
             user.Password = request.Password; // Placeholder - substitua pelo hasher
         }
 
-        user.Update(); // Chama o método da sua entidade para atualizar o 'UpdatedAt'
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
