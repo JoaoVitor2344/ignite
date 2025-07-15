@@ -1,4 +1,4 @@
-﻿using ignite.Application.Commands.GoalCommands;
+using ignite.Application.Commands.GoalCommands;
 using ignite.Application.Queries.GoalQueries;
 using ignite.DTOs;
 using ignite.Services.Interfaces;
