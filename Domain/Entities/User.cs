@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream:Domain/Entities/User.cs
 namespace ignite.Domain.Entities;
-=======
-namespace Domain.Models;
->>>>>>> Stashed changes:Domain/Models/User.cs
 
 public class User
 {

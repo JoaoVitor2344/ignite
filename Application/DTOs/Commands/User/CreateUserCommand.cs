@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace julius.Application.DTOs.Commands.User;
+namespace ignite.Application.DTOs.Commands.User;
 
 public class CreateUserCommand
 {

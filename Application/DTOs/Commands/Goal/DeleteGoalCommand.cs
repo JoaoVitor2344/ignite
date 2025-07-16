@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ignite.Application.DTOs.Commands.User;
+namespace ignite.Application.DTOs.Commands.Goal;
 
-public class DeleteUserCommand
+public class DeleteGoalCommand
 {
     public Guid Id { get; set; }
 } 

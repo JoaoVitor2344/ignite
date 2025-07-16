@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using ignite.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ignite.Infrastructure.Data
 {

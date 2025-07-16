@@ -1,19 +1,19 @@
-using julius.Application.DTOs.Commands.Auth;
-using julius.Application.DTOs.Response;
-using julius.Application.Services.Handlers;
+using ignite.Application.DTOs.Response;
+using ignite.Application.DTOs.Commands.Auth;
+using ignite.Application.Services.Handlers;
 
-namespace julius.Application.Services.Commands;
+namespace ignite.Application.Services.Commands;
 
 public class AuthCommandService
 {
     private readonly AuthHandlerService _handler;
-    
+
     public AuthCommandService(AuthHandlerService handler)
     {
         _handler = handler;
     }
 
-    public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequestDTO)
+    public async Task<LoginResponseDto> LoginAsync(LoginCommand loginRequestDTO)
     {
         return await _handler.HandleAsync(loginRequestDTO);
     }
@@ -27,4 +27,4 @@ public class AuthCommandService
     {
         return _handler.GenerateToken(userId);
     }
-} 
+}

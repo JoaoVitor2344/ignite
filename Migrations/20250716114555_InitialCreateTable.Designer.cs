@@ -12,7 +12,7 @@ using ignite.Infrastructure.Data;
 namespace ignite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250708222752_InitialCreateTable")]
+    [Migration("20250716114555_InitialCreateTable")]
     partial class InitialCreateTable
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace ignite.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ignite.Domain.Entities.Level", b =>
+            modelBuilder.Entity("ignite.Domain.Entities.Goal", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,25 +34,22 @@ namespace ignite.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<double>("Max")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Min")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Levels");
+                    b.ToTable("Goals");
                 });
 
             modelBuilder.Entity("ignite.Domain.Entities.User", b =>

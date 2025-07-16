@@ -1,24 +1,22 @@
-using julius.Application.DTOs.Response;
-using julius.Domain.Models;
+using ignite.Application.DTOs.Response;
+using ignite.Domain.Entities;
 
-namespace julius.Infrastructure.Adapters;
+namespace ignite.Infrastructure.Adapters;
 
 public static class UserAdapter
 {
-    public static UserDTO? ToDto(User? user)
+    public static UserResponseDto? ToDto(User? user)
     {
         if (user == null)
         {
             return null;
         }
 
-        return new UserDTO
+        return new UserResponseDto
         {
             Id = user.Id,
             Name = user.Name,
-            Email = user.Email,
-            CreatedAt = user.CreatedAt.ToString("o"),
-            UpdatedAt = user.UpdatedAt.ToString("o")
+            Email = user.Email
         };
     }
 } 

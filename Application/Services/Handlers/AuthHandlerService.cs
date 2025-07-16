@@ -1,15 +1,15 @@
-using julius.Infrastructure.Adapters;
-using julius.Application.DTOs.Commands.Auth;
-using julius.Application.DTOs.Response;
-using julius.Infrastructure.Data;
-using julius.Application.Interfaces;
+using ignite.Infrastructure.Adapters;
+using ignite.Application.DTOs.Response;
+using ignite.Application.DTOs.Commands.Auth;
+using ignite.Infrastructure.Data;
+using ignite.Application.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 
-namespace julius.Application.Services.Handlers;
+namespace ignite.Application.Services.Handlers;
 
 public class AuthHandlerService
 {
@@ -28,7 +28,7 @@ public class AuthHandlerService
         _jwtAudience = configuration["Jwt:Audience"] ?? "julius-users";
     }
 
-    public async Task<LoginResponseDTO> HandleAsync(LoginRequestDTO loginRequestDTO)
+    public async Task<LoginResponseDto> HandleAsync(LoginCommand loginRequestDTO)
     {
         var user = await _context.Users
             .Where(u => u.DeletedAt == null && u.Email == loginRequestDTO.Email)
@@ -41,9 +41,13 @@ public class AuthHandlerService
             throw new InvalidOperationException("Credenciais inválidas");
 
         var token = GenerateToken(user.Id);
-        var userDto = UserAdapter.ToDto(user)!;
-        
-        return new LoginResponseDTO(token, userDto);
+        // O UserAdapter pode ser ajustado para retornar UserResponseDto, mas LoginResponseDto espera Email e Name
+        return new LoginResponseDto {
+            Token = token,
+            Email = user.Email,
+            UserId = user.Id,
+            Expiration = DateTime.UtcNow.AddHours(24)
+        };
     }
 
     public bool ValidateToken(string token)

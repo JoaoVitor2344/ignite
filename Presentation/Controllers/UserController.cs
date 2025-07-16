@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using julius.Application.Services.Queries;
-using julius.Application.Services.Commands;
-using julius.Application.DTOs.Commands.User;
-using julius.Application.DTOs.Response;
+using ignite.Application.DTOs.Commands.User;
+using ignite.Application.Services.Commands;
+using ignite.Application.Services.Queries;
+using ignite.Application.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace julius.Presentation.Controllers;
+namespace ignite.Presentation.Controllers;
 
 [ApiController]
 [Route("api/v1/usuarios")]
@@ -14,9 +14,7 @@ public class UserController : ControllerBase
     private readonly UserQueryService _userQueryService;
     private readonly UserCommandService _userCommandService;
 
-    public UserController(
-        UserQueryService userQueryService,
-        UserCommandService userCommandService)
+    public UserController(UserQueryService userQueryService, UserCommandService userCommandService)
     {
         _userQueryService = userQueryService;
         _userCommandService = userCommandService;
@@ -24,7 +22,7 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpGet("consultar")]
-    [ProducesResponseType(typeof(List<UserDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<UserResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userQueryService.GetAllUsersAsync();
@@ -33,7 +31,7 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(Guid id)
     {
@@ -47,7 +45,7 @@ public class UserController : ControllerBase
 
     [HttpPost("criar")]
     [Authorize]
-    [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
     {
@@ -69,7 +67,7 @@ public class UserController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
@@ -81,7 +79,9 @@ public class UserController : ControllerBase
 
         if (id != command.Id)
         {
-            return BadRequest(new { message = "O ID da rota não corresponde ao ID no corpo da requisição." });
+            return BadRequest(
+                new { message = "O ID da rota não corresponde ao ID no corpo da requisição." }
+            );
         }
 
         try
@@ -112,7 +112,7 @@ public class UserController : ControllerBase
         {
             return NotFound(new { message = "Usuário não encontrado para exclusão." });
         }
-  
+
         return Ok("Usuário excluído com sucesso.");
     }
 }

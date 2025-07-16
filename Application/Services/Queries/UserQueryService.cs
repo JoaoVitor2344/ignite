@@ -1,9 +1,9 @@
-using julius.Application.DTOs.Response;
-using julius.Infrastructure.Data;
-using julius.Infrastructure.Adapters;
+using ignite.Application.DTOs.Response;
+using ignite.Infrastructure.Data;
+using ignite.Infrastructure.Adapters;
 using Microsoft.EntityFrameworkCore;
 
-namespace julius.Application.Services.Queries;
+namespace ignite.Application.Services.Queries;
 
 public class UserQueryService
 {
@@ -14,7 +14,7 @@ public class UserQueryService
         _context = context;
     }
 
-    public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+    public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
     {
         var users = await _context.Users
             .Where(u => u.DeletedAt == null)
@@ -23,7 +23,7 @@ public class UserQueryService
         return users.Select(user => UserAdapter.ToDto(user)!);
     }
 
-    public async Task<UserDTO?> GetUserByIdAsync(Guid id)
+    public async Task<UserResponseDto?> GetUserByIdAsync(Guid id)
     {
         var user = await _context.Users
             .Where(u => u.DeletedAt == null && u.Id == id)
@@ -32,7 +32,7 @@ public class UserQueryService
         return UserAdapter.ToDto(user);
     }
 
-    public async Task<UserDTO?> GetUserByEmailAsync(string email)
+    public async Task<UserResponseDto?> GetUserByEmailAsync(string email)
     {
         var user = await _context.Users
             .Where(u => u.DeletedAt == null && u.Email == email)

@@ -1,24 +1,24 @@
-using julius.Application.DTOs.Commands.User;
-using julius.Application.DTOs.Response;
-using julius.Application.Services.Handlers;
+using ignite.Application.DTOs.Commands.User;
+using ignite.Application.Services.Handlers;
+using ignite.Application.DTOs.Response;
 
-namespace julius.Application.Services.Commands;
+namespace ignite.Application.Services.Commands;
 
 public class UserCommandService
 {
     private readonly UserHandlerService _handler;
-    
+
     public UserCommandService(UserHandlerService handler)
     {
         _handler = handler;
     }
 
-    public async Task<UserDTO> CreateUserAsync(CreateUserCommand command)
+    public async Task<UserResponseDto> CreateUserAsync(CreateUserCommand command)
     {
         return await _handler.HandleAsync(command);
     }
 
-    public async Task<UserDTO?> UpdateUserAsync(UpdateUserCommand command)
+    public async Task<UserResponseDto?> UpdateUserAsync(UpdateUserCommand command)
     {
         return await _handler.HandleAsync(command);
     }
@@ -27,4 +27,4 @@ public class UserCommandService
     {
         return await _handler.HandleAsync(command);
     }
-} 
+}

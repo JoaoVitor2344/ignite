@@ -1,7 +1,7 @@
-using julius.Application.Interfaces;
+using ignite.Application.Interfaces;
 using BCrypt.Net;
 
-namespace julius.Infrastructure.Services;
+namespace ignite.Infrastructure.Services;
 
 public class PasswordService : IPasswordService
 {

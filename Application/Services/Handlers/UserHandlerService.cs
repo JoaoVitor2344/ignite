@@ -1,12 +1,12 @@
-using julius.Infrastructure.Adapters;
-using julius.Application.DTOs.Commands.User;
-using julius.Application.DTOs.Response;
-using julius.Domain.Models;
-using julius.Infrastructure.Data;
-using julius.Application.Interfaces;
+using ignite.Infrastructure.Adapters;
+using ignite.Application.DTOs.Commands.User;
+using ignite.Application.DTOs.Response;
+using ignite.Domain.Entities;
+using ignite.Infrastructure.Data;
+using ignite.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace julius.Application.Services.Handlers;
+namespace ignite.Application.Services.Handlers;
 
 public class UserHandlerService
 {
@@ -19,7 +19,7 @@ public class UserHandlerService
         _passwordService = passwordService;
     }
 
-    public async Task<UserDTO> HandleAsync(CreateUserCommand command)
+    public async Task<UserResponseDto> HandleAsync(CreateUserCommand command)
     {
         var existingUser = await _context.Users
             .Where(u => u.DeletedAt == null && u.Email == command.Email)
@@ -43,7 +43,7 @@ public class UserHandlerService
         return UserAdapter.ToDto(user)!;
     }
 
-    public async Task<UserDTO?> HandleAsync(UpdateUserCommand command)
+    public async Task<UserResponseDto?> HandleAsync(UpdateUserCommand command)
     {
         var user = await _context.Users
             .Where(u => u.DeletedAt == null && u.Id == command.Id)
@@ -71,7 +71,6 @@ public class UserHandlerService
         if (!string.IsNullOrEmpty(command.Password))
             user.Password = _passwordService.HashPassword(command.Password);
 
-        user.Update();
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
@@ -87,7 +86,7 @@ public class UserHandlerService
         if (user == null)
             return false;
 
-        user.SoftDelete();
+        user.DeletedAt = DateTime.UtcNow;
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 

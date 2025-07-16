@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
-using julius.Application.Services.Commands;
-using julius.Application.Services.Handlers;
-using julius.Application.Services.Queries;
-using julius.Application.Interfaces;
-using julius.Infrastructure.Services;
-using julius.Infrastructure.Data;
+using ignite.Application.Services.Commands;
+using ignite.Application.Services.Handlers;
+using ignite.Application.Services.Queries;
+using ignite.Application.Interfaces;
+using ignite.Infrastructure.Services;
+using ignite.Infrastructure.Data;
 
-namespace julius.Infrastructure.DependencyInjection;
+namespace ignite.Infrastructure.DependencyInjection;
 
 public static class ServiceExtensions
 {
@@ -20,6 +20,8 @@ public static class ServiceExtensions
         services.AddScoped<AuthHandlerService>();
         
         services.AddScoped<IPasswordService, PasswordService>();
-        services.AddScoped<PasswordMigrationService>();
+        services.AddScoped<GoalQueryService>();
+        services.AddScoped<GoalCommandService>();
+        services.AddScoped<GoalHandlerService>();
     }
 } 

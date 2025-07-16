@@ -1,12 +1,12 @@
-using julius.Application.DTOs.Commands.Auth;
-using julius.Application.DTOs.Response;
+using ignite.Application.DTOs.Response;
+using ignite.Application.DTOs.Commands.Auth;
 
-namespace julius.Application.Interfaces
+namespace ignite.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequestDTO);
+        Task<LoginResponseDto> LoginAsync(LoginCommand loginRequestDTO);
         Task<bool> ValidateTokenAsync(string token);
         string GenerateTokenAsync(Guid userId);
     }
-} 
+}

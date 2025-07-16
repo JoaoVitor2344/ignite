@@ -1,4 +1,4 @@
-namespace Application.DTOs.Commands.Auth;
+namespace ignite.Application.DTOs.Commands.Auth;
 
 public class LoginCommand
 {
