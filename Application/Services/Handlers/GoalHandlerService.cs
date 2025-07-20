@@ -1,9 +1,9 @@
 using ignite.Application.DTOs.Response;
 using ignite.Application.DTOs.Commands.Goal;
-using ignite.Domain.Entities;
 using ignite.Infrastructure.Adapters;
 using ignite.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using ignite.Domain.Models;
 
 namespace ignite.Application.Services.Handlers;
 
@@ -26,11 +26,10 @@ public class GoalHandlerService
         return GoalAdapter.ToDto(goal)!;
     }
 
-    public async Task<GoalResponseDto?> HandleAsync(UpdateGoalCommand command)
+    public async Task<GoalResponseDto?> HandleAsync(Guid id, UpdateGoalCommand command)
     {
-        var goal = await _context
-            .Goals.Where(g => g.DeletedAt == null && g.Id == command.Id)
-            .FirstOrDefaultAsync();
+        var goal = await _context.Goals
+        .FirstOrDefaultAsync(g => g.Id == id && g.DeletedAt == null);
 
         if (goal == null)
             return null;

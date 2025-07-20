@@ -70,12 +70,8 @@ public class GoalController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        if (id != command.Id)
-        {
-            return BadRequest(new { message = "O ID da rota não corresponde ao ID no corpo da requisição." });
-        }
 
-        var updatedGoal = await _goalCommandService.UpdateGoalAsync(command);
+        var updatedGoal = await _goalCommandService.UpdateGoalAsync(id, command);
         if (updatedGoal == null)
         {
             return NotFound(new { message = "Meta não encontrada para atualização." });

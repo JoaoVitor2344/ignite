@@ -1,10 +1,10 @@
 using ignite.Infrastructure.Adapters;
 using ignite.Application.DTOs.Commands.User;
 using ignite.Application.DTOs.Response;
-using ignite.Domain.Entities;
 using ignite.Infrastructure.Data;
 using ignite.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ignite.Domain.Models;
 
 namespace ignite.Application.Services.Handlers;
 
@@ -43,11 +43,10 @@ public class UserHandlerService
         return UserAdapter.ToDto(user)!;
     }
 
-    public async Task<UserResponseDto?> HandleAsync(UpdateUserCommand command)
+    public async Task<UserResponseDto?> HandleAsync(Guid id, UpdateUserCommand command)
     {
         var user = await _context.Users
-            .Where(u => u.DeletedAt == null && u.Id == command.Id)
-            .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync(g => g.Id == id && g.DeletedAt == null);
 
         if (user == null)
             return null;

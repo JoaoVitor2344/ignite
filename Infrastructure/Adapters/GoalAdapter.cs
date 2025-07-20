@@ -1,5 +1,5 @@
-using ignite.Domain.Entities;
 using ignite.Application.DTOs.Response;
+using ignite.Domain.Models;
 
 namespace ignite.Infrastructure.Adapters;
 
@@ -16,10 +16,7 @@ public static class GoalAdapter
         {
             Id = goal.Id,
             Name = goal.Name,
-            Description = goal.Description,
-            CreatedAt = goal.CreatedAt,
-            UpdatedAt = goal.UpdatedAt,
-            DeletedAt = goal.DeletedAt
+            Description = goal.Description
         };
     }
 } 

@@ -18,9 +18,9 @@ public class UserCommandService
         return await _handler.HandleAsync(command);
     }
 
-    public async Task<UserResponseDto?> UpdateUserAsync(UpdateUserCommand command)
+    public async Task<UserResponseDto?> UpdateUserAsync(Guid id, UpdateUserCommand command)
     {
-        return await _handler.HandleAsync(command);
+        return await _handler.HandleAsync(id, command);
     }
 
     public async Task<bool> DeleteUserAsync(DeleteUserCommand command)

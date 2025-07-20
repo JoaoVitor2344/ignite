@@ -1,5 +1,5 @@
 using ignite.Application.DTOs.Response;
-using ignite.Domain.Entities;
+using ignite.Domain.Models;
 
 namespace ignite.Infrastructure.Adapters;
 

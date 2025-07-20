@@ -1,21 +1,60 @@
-using System.Reflection;
-using System.Text;
+using ignite.Application.Interfaces;
 using ignite.Application.Services.Commands;
 using ignite.Application.Services.Handlers;
+using ignite.Application.Services.Queries;
+using ignite.Domain.Models;
 using ignite.Infrastructure.Data;
 using ignite.Infrastructure.DependencyInjection;
+using ignite.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NSwag;
+using NSwag.AspNetCore;
+using NSwag.Generation.Processors.Security;
+using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+// Configuração do banco de dados
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// JWT Authentication
-builder
-    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+// Configuração dos serviços
+builder.Services.AddControllers();
+
+// Registro dos serviços
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<UserHandlerService>();
+builder.Services.AddScoped<UserQueryService>();
+builder.Services.AddScoped<UserCommandService>();
+builder.Services.AddScoped<GoalQueryService>();
+builder.Services.AddScoped<GoalCommandService>();
+builder.Services.AddScoped<GoalHandlerService>();
+builder.Services.AddScoped<AuthCommandService>();
+builder.Services.AddScoped<AuthHandlerService>();
+
+// Configuração do NSwag (Swagger)
+builder.Services.AddOpenApiDocument(document =>
+{
+    document.Title = "Sua API";
+    document.Version = "v1";
+
+    document.AddSecurity("JWT", new OpenApiSecurityScheme
+    {
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Insira o token JWT no formato: Bearer {seu_token}"
+    });
+
+    document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+});
+
+// Configuração da autenticação JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -34,20 +73,21 @@ builder
 
 var app = builder.Build();
 
+// Configuração do pipeline de requisições HTTP
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseSwaggerUi(options =>
+    // Configuração do NSwag
+    app.UseOpenApi();
+    app.UseSwaggerUi(settings =>
     {
-        options.DocumentPath = "/openapi/v1.json";
+        settings.Path = "/swagger";
+        settings.DocumentPath = "/swagger/v1/swagger.json";
     });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

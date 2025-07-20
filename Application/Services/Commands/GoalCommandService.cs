@@ -18,9 +18,9 @@ public class GoalCommandService
         return await _handler.HandleAsync(command);
     }
 
-    public async Task<GoalResponseDto?> UpdateGoalAsync(UpdateGoalCommand command)
+    public async Task<GoalResponseDto?> UpdateGoalAsync(Guid id, UpdateGoalCommand command)
     {
-        return await _handler.HandleAsync(command);
+        return await _handler.HandleAsync(id, command);
     }
 
     public async Task<bool> DeleteGoalAsync(DeleteGoalCommand command)

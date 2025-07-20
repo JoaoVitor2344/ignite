@@ -44,7 +44,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("criar")]
-    [Authorize]
+    //[Authorize]
     [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
@@ -77,16 +77,9 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        if (id != command.Id)
-        {
-            return BadRequest(
-                new { message = "O ID da rota não corresponde ao ID no corpo da requisição." }
-            );
-        }
-
         try
         {
-            var updatedUser = await _userCommandService.UpdateUserAsync(command);
+            var updatedUser = await _userCommandService.UpdateUserAsync(id, command);
             if (updatedUser == null)
             {
                 return NotFound(new { message = "Usuário não encontrado para atualização." });
