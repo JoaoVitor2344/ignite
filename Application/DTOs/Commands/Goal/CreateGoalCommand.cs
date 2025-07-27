@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace ignite.Application.DTOs.Commands.Goal;
 
 public class CreateGoalCommand

@@ -33,6 +33,9 @@ builder.Services.AddScoped<UserCommandService>();
 builder.Services.AddScoped<GoalQueryService>();
 builder.Services.AddScoped<GoalCommandService>();
 builder.Services.AddScoped<GoalHandlerService>();
+builder.Services.AddScoped<CategoryQueryService>();
+builder.Services.AddScoped<CategoryCommandService>();
+builder.Services.AddScoped<CategoryHandlerService>();
 builder.Services.AddScoped<AuthCommandService>();
 builder.Services.AddScoped<AuthHandlerService>();
 
