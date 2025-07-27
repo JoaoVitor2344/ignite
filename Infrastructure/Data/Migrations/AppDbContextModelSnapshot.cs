@@ -8,7 +8,7 @@ using ignite.Infrastructure.Data;
 
 #nullable disable
 
-namespace ignite.Migrations
+namespace ignite.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
