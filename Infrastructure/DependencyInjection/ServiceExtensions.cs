@@ -18,10 +18,15 @@ public static class ServiceExtensions
 
         services.AddScoped<AuthCommandService>();
         services.AddScoped<AuthHandlerService>();
-        
+
         services.AddScoped<IPasswordService, PasswordService>();
+        
         services.AddScoped<GoalQueryService>();
         services.AddScoped<GoalCommandService>();
         services.AddScoped<GoalHandlerService>();
+
+        services.AddScoped<CategoryQueryService>();
+        services.AddScoped<CategoryCommandService>();
+        services.AddScoped<CategoryHandlerService>();
     }
 } 
