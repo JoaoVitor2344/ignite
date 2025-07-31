@@ -15,6 +15,7 @@ namespace ignite.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Level> Levels { get; set; } = null!;
 
         public async Task SeedAsync(AppDbContext context)
         {
@@ -62,4 +63,5 @@ namespace ignite.Infrastructure.Data
             }
         }
     }
+// ...existing code...
 }

@@ -46,7 +46,7 @@ public class UserHandlerService
     public async Task<UserResponseDto?> HandleAsync(Guid id, UpdateUserCommand command)
     {
         var user = await _context.Users
-        .FirstOrDefaultAsync(g => g.Id == id && g.DeletedAt == null);
+            .FirstOrDefaultAsync(g => g.Id == id && g.DeletedAt == null);
 
         if (user == null)
             return null;

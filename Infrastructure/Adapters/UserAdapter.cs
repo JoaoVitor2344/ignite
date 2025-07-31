@@ -14,7 +14,7 @@ public static class UserAdapter
 
         return new UserResponseDto
         {
-            Id = user.Id,
+            Id = user.Id, // Ensure user.Id is of type Guid
             Name = user.Name,
             Email = user.Email
         };

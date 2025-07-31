@@ -26,5 +26,8 @@ public static class ServiceExtensions
         services.AddScoped<CategoryQueryService>();
         services.AddScoped<CategoryCommandService>();
         services.AddScoped<CategoryHandlerService>();
+        services.AddScoped<LevelHandlerService>();
+        services.AddScoped<LevelCommandService>();
+        services.AddScoped<LevelQueryService>();
     }
 }

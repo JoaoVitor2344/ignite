@@ -14,7 +14,7 @@ public static class GoalAdapter
 
         return new GoalResponseDto
         {
-            Id = goal.Id,
+            Id = goal.Id, // Ensure goal.Id is of type Guid
             Name = goal.Name,
             Description = goal.Description
         };
