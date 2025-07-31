@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ignite.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateTable : Migration
+    public partial class CreateUsersTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

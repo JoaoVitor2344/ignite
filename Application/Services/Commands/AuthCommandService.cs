@@ -18,7 +18,7 @@ public class AuthCommandService
         return await _handler.HandleAsync(loginRequestDTO);
     }
 
-    public async Task<bool> ValidateTokenAsync(string token)
+    public bool ValidateToken(string token)
     {
         return _handler.ValidateToken(token);
     }

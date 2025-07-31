@@ -12,8 +12,8 @@ using ignite.Infrastructure.Data;
 namespace ignite.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250727214708_InitialCreateTable")]
-    partial class InitialCreateTable
+    [Migration("20250731021227_CreateUsersTable")]
+    partial class CreateUsersTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

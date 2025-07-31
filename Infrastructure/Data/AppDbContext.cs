@@ -1,12 +1,16 @@
+using ignite.Application.Interfaces;
 using ignite.Domain.Models;
+using ignite.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ignite.Infrastructure.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(
+        DbContextOptions<AppDbContext> options,
+        IPasswordService passwordService
+        ) : DbContext(options)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options) { }
+        private readonly IPasswordService _passwordService = passwordService;
 
         public DbSet<User> Users { get; set; }
         public DbSet<Goal> Goals { get; set; }
@@ -28,11 +32,13 @@ namespace ignite.Infrastructure.Data
                 {
                     Console.WriteLine("[SEEDER] Usuário admin NÃO encontrado. Criando novo usuário...");
 
+                    var passwordHash = _passwordService.HashPassword("admin123");
+
                     var adminUser = new User
                     {
                         Name = "Admin",
                         Email = "admin@ignite.com",
-                        Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
+                        Password = passwordHash,
                         CreatedAt = DateTime.UtcNow
                     };
 

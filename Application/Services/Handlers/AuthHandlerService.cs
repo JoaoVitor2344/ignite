@@ -18,14 +18,16 @@ public class AuthHandlerService
     private readonly string _jwtSecret;
     private readonly string _jwtIssuer;
     private readonly string _jwtAudience;
+    private readonly int _jwtTokenExpirationMinutes;
 
     public AuthHandlerService(AppDbContext context, IPasswordService passwordService, IConfiguration configuration)
     {
         _context = context;
         _passwordService = passwordService;
-        _jwtSecret = configuration["Jwt:Secret"] ?? "your-super-secret-key-with-at-least-32-characters";
+        _jwtSecret = configuration["Jwt:Secret"] ?? configuration["Jwt:Key"] ?? "your-super-secret-key-with-at-least-32-characters";
         _jwtIssuer = configuration["Jwt:Issuer"] ?? "julius";
         _jwtAudience = configuration["Jwt:Audience"] ?? "julius-users";
+        _jwtTokenExpirationMinutes = int.TryParse(configuration["Jwt:TokenExpirationMinutes"], out var minutes) ? minutes : 60;
     }
 
     public async Task<LoginResponseDto> HandleAsync(LoginCommand loginRequestDTO)
@@ -81,14 +83,14 @@ public class AuthHandlerService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSecret);
-        
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
             }),
-            Expires = DateTime.UtcNow.AddHours(24),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtTokenExpirationMinutes),
             Issuer = _jwtIssuer,
             Audience = _jwtAudience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
